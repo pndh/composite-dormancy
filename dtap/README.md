@@ -26,6 +26,22 @@ dtap eval --task-list composite-dormancy.jsonl \
 Results land in `results/benchmark/<agent_type>/<model>/workflow/malicious/indirect/data-exfiltration/composite-dormancy-001/`
 with the standard `judge_result.json` and per-task trajectory.
 
+## Watch the agent
+
+Live stream of a running evaluation (tool calls, phases, judge verdict):
+
+```bash
+python3 dtap/watch.py -- dtap eval --task-list composite-dormancy.jsonl \
+  --agent-type openaisdk --model openai/gpt-5.6-luna-pro --max-parallel 1 --verbose
+```
+
+Replay a finished trajectory as an agent-action stream (no Docker/API needed):
+
+```bash
+python3 dtap/replay.py <DTAP>/results/<run>/.../composite-dormancy-001
+python3 dtap/replay.py <trajectory.json> --delay 0.4
+```
+
 ## Fragments
 
 | Channel | Seed artifact | Contains |
