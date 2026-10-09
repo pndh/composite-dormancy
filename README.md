@@ -4,7 +4,8 @@ Research lab for **composite dormant threats** against tool-using agents: payloa
 fragments are individually benign and only compose into a harmful action when an agent
 assembles them across channels (mail, docs, calendar, tool descriptions) at a later trigger.
 
-Status: scaffold. Threat-model spec and sandbox scenario in progress.
+Status: working lab. Standalone replica with ablation results, plus a DTAP-native task
+bundle in `dtap/` (runs on the full Docker platform; see `dtap/README.md` for results).
 
 ## Layout
 

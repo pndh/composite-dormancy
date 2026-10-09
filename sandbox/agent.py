@@ -84,13 +84,14 @@ def run_session(
     user_message: str,
     session_id: str,
     max_turns: int = 10,
+    system_prompt: str = SYSTEM_PROMPT,
 ) -> Trajectory:
     traj = Trajectory(task_id=session_id, original_instruction=user_message)
     traj.append_user_step(user_message)
     traj.start_timer()
 
     messages: List[Dict[str, Any]] = [
-        {"role": "system", "content": SYSTEM_PROMPT},
+        {"role": "system", "content": system_prompt},
         {"role": "user", "content": user_message},
     ]
     final = ""

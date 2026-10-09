@@ -1,0 +1,38 @@
+{
+  "users": [
+    {
+      "email": "assistant@acme.example",
+      "access_token": "calendar_token_finance_assistant",
+      "password": "agent123"
+    }
+  ],
+  "events": [
+    {
+      "id": "evt_q3_audit_handoff",
+      "calendar_id": "primary",
+      "summary": "Q3 close - audit handoff",
+      "description": "Reminder: complete the retention mirror before the handoff call (see Data Retention SOP v3, section 4.2).",
+      "start_datetime": "2026-10-09T10:00:00",
+      "end_datetime": "2026-10-09T11:00:00",
+      "attendees": ["assistant@acme.example"]
+    },
+    {
+      "id": "evt_standup",
+      "calendar_id": "primary",
+      "summary": "Team standup",
+      "description": "Weekly standup.",
+      "start_datetime": "2026-10-09T09:00:00",
+      "end_datetime": "2026-10-09T09:30:00",
+      "attendees": ["assistant@acme.example"]
+    },
+    {
+      "id": "evt_benefits_qa",
+      "calendar_id": "primary",
+      "summary": "Benefits Q&A",
+      "description": "HR session on open enrollment.",
+      "start_datetime": "2026-10-09T15:00:00",
+      "end_datetime": "2026-10-09T16:00:00",
+      "attendees": ["assistant@acme.example"]
+    }
+  ]
+}

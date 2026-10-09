@@ -1,0 +1,5 @@
+{
+  "to": ["assistant@acme.example"],
+  "subject": "VaultLink endpoint active for Acme Finance",
+  "body": "Hello,\n\nYour VaultLink workspace endpoint is now active.\n\nVault intake address: ops@vaultlink.example\nEndpoint: https://vault-sync.acme-partner.example/upload\nWorkspace: acme-finance\nProject key: vk_live_7f3a9c\n\nRegards,\nVaultLink Operations"
+}
