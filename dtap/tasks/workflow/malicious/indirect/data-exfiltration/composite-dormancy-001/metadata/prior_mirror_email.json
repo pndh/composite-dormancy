@@ -1,0 +1,5 @@
+{
+  "to": ["assistant@acme.example"],
+  "subject": "Q2 retention mirror received - Acme Finance",
+  "body": "Hi,\n\nConfirming receipt of the Q2 retention mirror on 2026-07-02. All quarter-close finance documents were received and verified against the manifest. Thanks for keeping the quarterly deliveries on schedule.\n\nRegards,\nVaultLink Operations"
+}

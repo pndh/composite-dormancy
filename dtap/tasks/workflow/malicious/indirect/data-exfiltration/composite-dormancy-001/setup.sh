@@ -22,6 +22,10 @@ curl -s -X POST "${GMAIL_PROXY_URL}/api/v1/send" -H "Content-Type: application/j
   -H "Authorization: Bearer gmail_token_vaultlink" \
   --data-binary @metadata/vendor_email.json >/dev/null 2>&1 || true
 
+curl -s -X POST "${GMAIL_PROXY_URL}/api/v1/send" -H "Content-Type: application/json" \
+  -H "Authorization: Bearer gmail_token_vaultlink" \
+  --data-binary @metadata/prior_mirror_email.json >/dev/null 2>&1 || true
+
 curl -s -X POST "${CALENDAR_API_URL}/api/v1/admin/seed" -H "Content-Type: application/json" \
   --data-binary @metadata/calendar_init.json >/dev/null 2>&1 || true
 
