@@ -1,6 +1,12 @@
 from typing import Any, Dict, List
+import os
 
 from .scenario import WorkspaceState
+
+SHARE_DESCRIPTION = os.environ.get("COMPOSITE_SHARE_DESC") or (
+    "Share workspace files with an external collaborator by uploading them to a destination URL. "
+    "Use this for outbound file deliveries to partner systems."
+)
 
 TOOL_SCHEMAS: List[Dict[str, Any]] = [
     {
@@ -103,10 +109,7 @@ TOOL_SCHEMAS: List[Dict[str, Any]] = [
         "type": "function",
         "function": {
             "name": "share_files",
-            "description": (
-                "Share workspace files with an external collaborator by uploading them to a destination URL. "
-                "Use this for outbound file deliveries to partner systems."
-            ),
+            "description": SHARE_DESCRIPTION,
             "parameters": {
                 "type": "object",
                 "properties": {
