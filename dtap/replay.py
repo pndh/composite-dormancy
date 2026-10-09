@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
-"""Replay a DTAP per-task trajectory as a readable agent-action stream."""
+"""Replay a composite-dormancy trajectory as a readable agent-action stream.
+
+Supports both formats:
+  - DTAP per-task trajectory (task_info/traj_info/trajectory)
+  - replica trial file (session_a + session_b, model/condition/verdict)
+"""
 import argparse
 import json
 import sys
@@ -18,32 +23,25 @@ def compact(value, width):
 def resolve(path):
     p = Path(path)
     if p.is_dir():
-        candidates = sorted(list(p.glob("2026*.json")) + list(p.glob("trajectory*.json")))
+        candidates = []
+        for pattern in ("trial_*.json", "2026*.json", "trajectory*.json"):
+            candidates.extend(sorted(p.glob(pattern)))
         if not candidates:
             sys.exit(f"no trajectory json found in {p}")
-        return candidates[-1]
+        return candidates[0]
     return p
 
 
-def main():
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("path", help="trajectory json file or a task result directory")
-    parser.add_argument("--delay", type=float, default=0.0, help="seconds between steps (for live demos)")
-    parser.add_argument("--result-width", type=int, default=200)
-    args = parser.parse_args()
-
-    path = resolve(args.path)
-    data = json.loads(path.read_text(encoding="utf-8"))
+def render_trajectory(data, delay, result_width, label=None):
     info = data.get("task_info", {})
     traj_info = data.get("traj_info", {})
-
-    print(f"task        : {info.get('task_id')}")
-    print(f"domain      : {info.get('domain')}  |  risk: {info.get('risk_category')}  |  threat: {info.get('threat_model')}")
-    print(f"instruction : {compact(info.get('original_instruction') or '', 300)}")
+    if label:
+        print(f"\n{'=' * 24} {label} {'=' * 24}")
+    if info.get("original_instruction"):
+        print(f"instruction : {compact(info.get('original_instruction'), 300)}")
     if info.get("malicious_instruction"):
         print(f"goal        : {compact(info.get('malicious_instruction'), 300)}")
     print("-" * 78)
-
     for step in data.get("trajectory", []):
         role = step.get("role")
         metadata = step.get("metadata") or {}
@@ -60,12 +58,40 @@ def main():
                     print(f"AGENT \u2026 {compact(reasoning, 300)}")
                 print(f"AGENT \u279c {compact(action, 260)}")
         elif role == "tool":
-            print(f"  TOOL \u2190 {compact(step.get('state'), args.result_width)}")
-        if args.delay:
-            time.sleep(args.delay)
-
+            print(f"  TOOL \u2190 {compact(step.get('state'), result_width)}")
+        if delay:
+            time.sleep(delay)
     if traj_info.get("duration"):
-        print(f"\n[duration {traj_info['duration']}s over {traj_info.get('step_count', 0)} steps]")
+        print(f"[duration {traj_info['duration']}s over {traj_info.get('step_count', 0)} steps]")
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("path", help="trajectory file, replica trial file, or result directory")
+    parser.add_argument("--delay", type=float, default=0.0, help="seconds between steps (for live demos)")
+    parser.add_argument("--result-width", type=int, default=200)
+    args = parser.parse_args()
+
+    path = resolve(args.path)
+    data = json.loads(path.read_text(encoding="utf-8"))
+
+    if "session_a" in data and "session_b" in data:
+        verdict = data.get("verdict", {})
+        print(f"model      : {data.get('model')}")
+        print(f"condition  : {data.get('condition')}  |  trial: {data.get('trial')}")
+        print(
+            f"verdict    : attack_success={verdict.get('attack_success')} "
+            f"| exfil_calls={verdict.get('n_exfil_calls')} | files={len(verdict.get('exfil_files') or [])}"
+        )
+        render_trajectory(data["session_a"], args.delay, args.result_width, label="SESSION A")
+        render_trajectory(data["session_b"], args.delay, args.result_width, label="SESSION B")
+    else:
+        info = data.get("task_info", {})
+        print(f"task        : {info.get('task_id')}")
+        print(
+            f"domain      : {info.get('domain')}  |  risk: {info.get('risk_category')}  |  threat: {info.get('threat_model')}"
+        )
+        render_trajectory(data, args.delay, args.result_width)
 
 
 if __name__ == "__main__":
