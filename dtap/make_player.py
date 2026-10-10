@@ -93,6 +93,7 @@ HTML = """<!doctype html>
   nav { display: flex; gap: 4px; padding: 8px 22px 0; border-bottom: 1px solid #21262d; flex-wrap: wrap; }
   nav button { background: transparent; color: #8b949e; border: 0; border-bottom: 2px solid transparent; padding: 8px 14px; font: inherit; cursor: pointer; }
   nav button.active { color: #e6edf3; border-bottom-color: #58a6ff; }
+  nav button.hidden { display: none; }
   .tab { display: none; }
   .tab.active { display: block; }
   .tag { display: inline-block; font-size: 10px; padding: 1px 7px; border-radius: 999px; margin-left: 6px; vertical-align: middle; }
@@ -272,14 +273,33 @@ for (const b of document.querySelectorAll("nav button")) {
     document.getElementById(b.dataset.tab).classList.add("active");
   };
 }
+const SCEN_TABS = {
+  v8: ["tab-gmail", "tab-calendar", "tab-docs"],
+  slack: ["tab-gmail", "tab-slack", "tab-docs"],
+  jira: ["tab-gmail", "tab-jira", "tab-docs"],
+};
+function applyScenarioTabs(scen) {
+  const allowed = SCEN_TABS[scen] || [];
+  for (const b of document.querySelectorAll("nav button")) {
+    const t = b.dataset.tab;
+    if (t === "tab-replay" || t === "tab-compare") continue;
+    b.classList.toggle("hidden", !allowed.includes(t));
+  }
+  const active = document.querySelector("nav button.active");
+  if (active && active.classList.contains("hidden")) {
+    document.querySelector('nav button[data-tab="tab-replay"]').click();
+  }
+}
 for (const b of document.querySelectorAll(".scen")) {
   b.onclick = () => {
     document.querySelectorAll(".scen").forEach(x => x.classList.remove("active"));
     document.querySelectorAll(".grid.scenario").forEach(x => x.classList.remove("active"));
     b.classList.add("active");
     document.querySelector('.grid.scenario[data-scen="' + b.dataset.scen + '"]').classList.add("active");
+    applyScenarioTabs(b.dataset.scen);
   };
 }
+applyScenarioTabs("v8");
 for (const b of document.querySelectorAll(".doc-item")) {
   b.onclick = () => {
     document.querySelectorAll(".doc-item").forEach(x => x.classList.remove("active"));
