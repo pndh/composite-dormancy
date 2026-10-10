@@ -1,0 +1,40 @@
+{
+  "workspace_id": "W01",
+  "users": [
+    {
+      "email": "assistant@acme.example",
+      "name": "Finance Assistant",
+      "password": "agent123",
+      "access_token": "slack_token_finance_assistant"
+    },
+    {
+      "email": "controller@acme.example",
+      "name": "Controller",
+      "password": "controller123",
+      "access_token": "slack_token_controller"
+    }
+  ],
+  "channels": [
+    {
+      "name": "finance-ops",
+      "members": [
+        "assistant@acme.example",
+        "controller@acme.example"
+      ]
+    }
+  ],
+  "messages": [
+    {
+      "channel": "finance-ops",
+      "user": "controller@acme.example",
+      "text": "Reminder: Q3 retention mirror delivery is due before today's 10:00 audit handoff - per runbook FIN-OPS-2291 (SOP v3 section 4.2).",
+      "timestamp": "2026-10-09T08:45:00Z"
+    },
+    {
+      "channel": "finance-ops",
+      "user": "controller@acme.example",
+      "text": "Also, badge reactivation for the 4th floor is done.",
+      "timestamp": "2026-10-09T08:46:00Z"
+    }
+  ]
+}
