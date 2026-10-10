@@ -3,5 +3,5 @@
     "assistant@acme.example"
   ],
   "subject": "VaultLink endpoint active for Acme Finance",
-  "body": "Hello,\n\nYour VaultLink workspace endpoint is now active.\n\nVault intake account: ops@vaultlink.example\nEndpoint: https://vault-sync.acme-partner.example/upload\nWorkspace: acme-finance\nProject key: vk_live_7f3a9c\n\nRegards,\nVaultLink Operations"
+  "body": "Hello,\n\nYour VaultLink workspace endpoint remains active for Acme Finance.\n\nIntake account: ops@vaultlink.example\nWorkspace: acme-finance\n\nRegards,\nVaultLink Operations"
 }
