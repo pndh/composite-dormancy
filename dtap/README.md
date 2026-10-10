@@ -44,10 +44,12 @@ python3 dtap/replay.py <trajectory.json> --delay 0.4
 
 ## Replay without setup
 
-The winning v8 run is committed for zero-setup replay — stdlib Python only, no Docker, no API keys:
+Zero dependencies, pick either:
+
+- **Browser (nothing to install):** open `dtap/demo/v8_trial_1/replay.html` — the full trajectory is embedded, it auto-plays the agent actions, with pause/step/speed controls.
+- **Terminal (Python 3 only):**
 
 ```bash
-git clone <repo> && cd composite-dormancy
 python3 dtap/replay.py dtap/demo/v8_trial_1/trajectory.json --delay 0.4
 ```
 
