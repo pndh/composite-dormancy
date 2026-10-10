@@ -475,7 +475,6 @@ function addStep() {
   consoleEl.appendChild(div);
   fill.style.width = Math.round(100 * i / steps.length) + "%";
   if (s.text.startsWith("AGENT \u279c share_document")) div.style.outline = "1px solid #f85149";
-  window.scrollTo(0, document.body.scrollHeight);
 }
 function tick() { addStep(); if (playing && i < steps.length) timer = setTimeout(tick, delay); }
 function start() { clearTimeout(timer); playing = true; timer = setTimeout(tick, delay); }
