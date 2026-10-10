@@ -161,6 +161,18 @@ HTML = """<!doctype html>
   .doc-content { color: #3c4043; font-size: 14px; }
   .doc { display: none; }
   .doc.active { display: block; }
+
+  /* compare tab */
+  .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; padding: 14px 22px 40px; }
+  @media (max-width: 900px) { .compare { grid-template-columns: 1fr; } }
+  .col { border: 1px solid #30363d; border-radius: 8px; padding: 14px; background: #161b22; }
+  .col h3 { margin: 0 0 8px; font-size: 14px; color: #e6edf3; }
+  .col .rate { color: #8b949e; font-size: 12px; margin-bottom: 8px; }
+  .col .rate b { color: #e6edf3; }
+  .acts { color: #8b949e; font-size: 12px; margin: 8px 0; }
+  .acts .hit { color: #ff7b72; }
+  .acts .none { color: #56d364; }
+  .reply { white-space: pre-wrap; color: #c9d1d9; font-size: 12.5px; max-height: 460px; overflow: auto; border-top: 1px solid #30363d; padding-top: 10px; }
 </style>
 </head>
 <body>
@@ -170,6 +182,7 @@ HTML = """<!doctype html>
 </header>
 <nav>
   <button data-tab="tab-replay" class="active">Agent replay</button>
+  <button data-tab="tab-compare">Compare models</button>
   <button data-tab="tab-gmail">Gmail</button>
   <button data-tab="tab-calendar">Calendar</button>
   <button data-tab="tab-docs">Google Docs</button>
@@ -185,6 +198,10 @@ HTML = """<!doctype html>
     <div id="bar"><div id="fill"></div></div>
   </div>
   <div id="console"></div>
+</section>
+
+<section id="tab-compare" class="tab">
+  __COMPARE__
 </section>
 
 <section id="tab-gmail" class="tab">
@@ -318,8 +335,32 @@ SURFACE = """
 """
 
 
+def agent_column(title, traj, verdict, note):
+    info = traj.get("traj_info", {})
+    reply = info.get("agent_final_response") or "(no reply recorded)"
+    acts = []
+    for step in traj.get("trajectory", []):
+        if step.get("role") != "agent":
+            continue
+        action = step.get("action") or ""
+        if any(k in action for k in ("share_document", "share_files", "send_email", "enable_link_sharing", "forward_message", "upload_")):
+            acts.append(action)
+    if acts:
+        act_html = "".join(f'<div class="hit">&#10132; {escape(a)}</div>' for a in acts[:12])
+    else:
+        act_html = '<div class="none">no external-share or email calls</div>'
+    ok = verdict.get("attack_success")
+    badge = f'<span class="badge {"hit" if ok else ""}">attack_success: {str(ok).lower()}</span>'
+    return f"""<div class="col">
+  <h3>{escape(title)} {badge}</h3>
+  <div class="rate">{note}</div>
+  <div class="acts"><b>external-transfer calls:</b>{act_html}</div>
+  <div class="reply">{escape(reply)}</div>
+</div>"""
+
+
 def main():
-    if len(sys.argv) != 5:
+    if len(sys.argv) < 5:
         sys.exit(__doc__)
     task_dir, traj_path, verdict_path, out_path = sys.argv[1:5]
     task = Path(task_dir)
@@ -335,6 +376,17 @@ def main():
     docs = json.loads((meta / "googledocs_seed.json").read_text())["data"]["documents"]
 
     email_html, event_html, doc_html, doc_list = build_tabs(emails, events, docs)
+
+    compare_html = ""
+    if len(sys.argv) >= 8:
+        c_label, c_traj, c_verdict = sys.argv[5], sys.argv[6], sys.argv[7]
+        c_note = sys.argv[8] if len(sys.argv) > 8 else ""
+        c_traj_data = json.loads(Path(c_traj).read_text())
+        c_verdict_data = json.loads(Path(c_verdict).read_text())
+        compare_html = '<div class="compare">' + agent_column(
+            "openai/gpt-5.6-luna-pro (v8)", traj, verdict, "5/5 executed; this tab shows trial 1"
+        ) + agent_column(c_label, c_traj_data, c_verdict_data, c_note) + "</div>"
+
     payload = json.dumps({"traj": traj, "verdict": verdict}, ensure_ascii=False).replace("</", "<\\/")
     html = (
         HTML.replace("__SURFACE__", SURFACE)
@@ -342,6 +394,7 @@ def main():
         .replace("__EVENTS__", event_html)
         .replace("__DOC_LIST__", doc_list)
         .replace("__DOCS__", doc_html)
+        .replace("__COMPARE__", compare_html)
         .replace("__PAYLOAD__", payload)
     )
     out = Path(out_path)
