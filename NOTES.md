@@ -52,3 +52,12 @@ v13: vendor-owned docs (runbook + checklist) shared into the assistant's workspa
 - Invitations are not modeled as invitations: seeding an event with `attendees` strips them (`attendees: []`); a vendor-created invite on the vendor's calendar carries `responseStatus: needsAction`, but it never appears in the invitee's `/calendars/primary/events` list - before or after a 200 `POST /events/{id}/accept`.
 - Consequence: `accept_invitation` exists as a tool but is unreachable in practice (the agent can never discover the invite). The v13 visualization states this instead of faking an accept step.
 - Docs sharing needs no acceptance (Google-style): shared docs simply appear in `list_documents`; there is no accept tool for shares.
+
+### 2026-10-11 — Calendar invitations: workaround recipe + v13c faithful run (pinned)
+Recipe that makes invitations real and reachable (host-side setup, no platform patch):
+1. `POST /api/v1/reset` first (register 500s on stale state).
+2. Admin seed with `users` + `events`, **no explicit `calendars`** -> invitee calendar id resolves as `primary` for the MCP.
+3. `PATCH /calendar/v3/calendars/primary/events/<id>` with `attendees` (invitee `responseStatus: needsAction`, vendor `organizer: true`) - the seed strips attendees, the PATCH backfills them.
+4. Date the event in the **future** - `list_events(time_min="now")` hides past events (root cause of the earlier "no invite found").
+Result: agent lists the invitation and calls `accept_invitation` (200) - observed in v13c (2/2, shares to the external intake still execute).
+Upstream asks for DTAP: seed should honor `attendees`; accept should reflect in the invitee list.

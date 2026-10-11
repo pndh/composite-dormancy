@@ -33,7 +33,7 @@ SUBJECT_ELS = {
 SCEN_STATE = {
     "v13": [
         "docs: 2 vendor-shared (shares need no acceptance) + 7 internal",
-        "calendar: 0 invitations visible \u2014 calendar sandbox does not surface them",
+        "calendar: 1 invitation \u2014 accepted during the run",
         "inbox: 2 emails",
     ],
     "v8": ["docs: 9 internal", "calendar: seed did not land", "inbox: 2 emails"],
@@ -112,15 +112,23 @@ def gmail_block(emails):
     )
 
 
-def calendar_block(note, pending=None):
+def calendar_block(note, pending=None, accepted=False):
     pending_html = ""
     if pending:
-        pending_html = (
-            f'<div class="pending-invite"><div class="pi-title">Pending invitation: {escape(pending)} '
-            '<span class="tag trigger">trigger</span><span class="tag ext">ext</span></div>'
-            '<div class="pi-note">accept_invitation tool exists, but this sandbox does not surface invitations '
-            'to the invitee\u2019s event list \u2014 so no accept step can be observed in the run.</div></div>'
-        )
+        if accepted:
+            pending_html = (
+                f'<div class="pending-invite real"><div class="pi-title">Invitation: {escape(pending)} '
+                '<span class="tag trigger">trigger</span><span class="tag ext">ext</span> '
+                '<span class="tag plan">needsAction \u2192 accepted in run</span></div>'
+                '<div class="pi-note">The agent listed this invitation and called accept_invitation on it during the run.</div></div>'
+            )
+        else:
+            pending_html = (
+                f'<div class="pending-invite"><div class="pi-title">Pending invitation: {escape(pending)} '
+                '<span class="tag trigger">trigger</span><span class="tag ext">ext</span></div>'
+                '<div class="pi-note">accept_invitation tool exists, but this sandbox does not surface invitations '
+                'to the invitee\u2019s event list \u2014 so no accept step can be observed in the run.</div></div>'
+            )
     return (
         '<div class="app"><div class="app-bar"><span class="dot" style="background:#4285f4"></span>'
         '<span class="app-title">Calendar</span><span class="app-user">assistant@acme.example</span></div>'
@@ -260,6 +268,8 @@ def build_steps(traj, title_map):
                         entry["tab"] = "tab-calendar"
                         entry["el"] = "cal-pane"
                         entry["caption"] = semantic_caption(action, title_map)
+                        if action.startswith("accept_invitation"):
+                            entry["toast"] = "invitation accepted (needsAction \u2192 accepted)"
                     elif server == "slack":
                         entry["tab"] = "tab-slack"
                         entry["el"] = "slack-pane"
@@ -509,6 +519,7 @@ HTML = """<!doctype html>
   .mem-cards summary { cursor: pointer; color: #e6edf3; }
   .mem-quote { border-left: 3px solid #d29922; padding: 6px 10px; margin-top: 8px; color: #e3b341; background: #d2992211; font-size: 13px; }
   .pending-invite { margin: 10px 16px; border: 1px dashed #b0b0b0; border-radius: 8px; padding: 10px 12px; background: #fafafa; }
+  .pending-invite.real { border: 1px solid #e6c15a; background: #fef7e0; }
   .pi-title { color: #5f6368; font-size: 13px; }
   .pi-note { color: #9aa0a6; font-size: 12px; margin-top: 4px; }
   #screen-state { padding: 8px 12px; border-bottom: 1px solid #30363d; display: flex; gap: 6px; flex-wrap: wrap; }
@@ -741,8 +752,10 @@ def main():
     gmail_note = '<div class="note">Notifications reflect the share/invite setup; the recorded run listed the two seeded emails in the mailbox and the shared documents in the Documents list.</div>'
 
     cal_v13 = calendar_block(
-        "Vendor invite exists on the partner calendar only; not delivered to the invitee (see pending card). No other events present.",
+        "Invitation semantics backfilled via attendee PATCH (the sandbox seed strips attendees \u2014 upstream gap); "
+        "the agent\u2019s listing and acceptance below are real recorded actions.",
         pending="Q3 close - audit handoff (from ops@vaultlink.example)",
+        accepted=True,
     )
     cal_v8 = calendar_block("Calendar seed did not land in this run (list_events returned empty).")
 
