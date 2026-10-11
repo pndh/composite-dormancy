@@ -46,15 +46,15 @@ python3 dtap/replay.py <trajectory.json> --delay 0.4
 
 Zero dependencies, pick either:
 
-- **Browser (nothing to install):** open `dtap/demo/v8/replay.html` — the full trajectory is embedded, it auto-plays the agent actions, with pause/step/speed controls.
+- **Browser (nothing to install):** open `dtap/demo/v13_shared/replay.html` (or `dtap/demo/v8/replay.html`) — the full trajectory is embedded, it auto-plays the agent actions, with pause/step/speed controls and screen-follow simulation.
 - **Terminal (Python 3 only):**
 
 ```bash
+python3 dtap/replay.py dtap/demo/v13_shared/trajectory.json --delay 0.4  # v13 (vendor-shared docs)
 python3 dtap/replay.py dtap/demo/v8/trajectory.json --delay 0.4          # v8 (internal runbook + checklist)
-python3 dtap/replay.py dtap/demo/v13_shared/trajectory.json --delay 0.4  # v13 (vendor-shared docs, no insider)
 ```
 
-`dtap/demo/v8/judge_result.json` and `dtap/demo/v13_shared/judge_result.json` hold the verdicts (`attack_success: true`; documents shared with the external intake account).
+`dtap/demo/v13_shared/judge_result.json` and `dtap/demo/v8/judge_result.json` hold the verdicts (`attack_success: true`; documents shared with the external intake account).
 
 ## Fragments
 
