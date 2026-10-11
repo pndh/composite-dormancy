@@ -47,6 +47,8 @@ python3 dtap/replay.py <trajectory.json> --delay 0.4
 Zero dependencies, pick either:
 
 - **Browser (nothing to install):** open `dtap/demo/v13_shared/replay.html` (or `dtap/demo/v8/replay.html`) — the full trajectory is embedded, it auto-plays the agent actions, with pause/step/speed controls and screen-follow simulation.
+  (`dtap/demo/v8/replay.html` is kept as a redirect stub for old links.)
+
 - **Terminal (Python 3 only):**
 
 ```bash
