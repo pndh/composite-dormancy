@@ -80,3 +80,21 @@ Key SOTA mapped to our wall:
 - Silent Failures (2609.32691): argument-level scoring + disclose-attack metric; our judge is argument-level.
 Additional attack classes run this round (all FAIL, luna-pro, hardened prompt, v13 threat model): idea1 write-into-vendor-owned-doc (agent flagged owner externality); idea1r1 destination substitution (user asks standard procedure, endpoint from fragments); idea2_many (AdaLCPI + many-shot). Folder-move ACL exfil probed: sandbox does not propagate folder ACLs and blocks folder sharing -> dead vector + platform gap.
 Final: 0 attacker-realistic breaks across 12 attempts / 8 attack classes. Breaks require out-of-threat-model levers (user authorization + internal provenance, 1/2 stochastic).
+
+### 2026-10-11 — Sleeper-channel literature + frontier solutions to the authority problem (pinned)
+How delayed ("sleeper") attacks dissolve the authority hurdle instead of solving it:
+- Sleeper Channels and Provenance Gates (2605.13471): always-on agents (OpenClaw, Hermes Agent) fold messaging/memory/skills/scheduling/shell into one authority boundary. Untrusted input persists (memory, skill, cron job, filesystem patch) and fires later through a DIFFERENT surface with no attacker present. End-to-end confused-deputy cron attack on OpenClaw at a pinned commit. Defense D2 = provenance gate with one-shot owner attestations (beats paraphrase laundering, grant reuse, replay). Artifact: github.com/maloyan/sleeper-channels.
+- Hidden in Memory: Sleeper Memory Poisoning (2605.15338): external doc/page/repo makes the assistant store a fabricated memory about the user; poisoned memory writes up to 99.8% (GPT-5.5), 95% (Kimi-K2.6); 60-89% of successful retrievals cause attacker-intended agentic actions. Dormant across conversations.
+- Visual Inception (2604.16966): multimodal memory poisoning; 85% goal-hit; defense CognitiveGuard.
+Mechanism: at fire time the "instruction" is the agent's OWN memory/skill/schedule under the owner's identity — no untrusted instruction is in context, so the authority problem is bypassed by temporal separation, not defeated.
+No "ninja" attack exists in the LLM literature (arXiv: only an NFT paper); likely misremembered as sleeper/dormant.
+Frontier solutions (all architectural, none prompt-level):
+- CaMeL (Debenedetti et al. 2025): dual-LLM + capability policies from trusted control flow; untrusted data cannot drive privileged effects. Canonical answer.
+- Multi-CaMeL (2610.05640): CaMeL does not compose across agents; provenance-preserving A2A protocol -> 0.0% ASR.
+- ToolFence (2609.37196): typed authorization blueprint + deterministic monitor; near-zero ASR, 3.8pp utility drop.
+- APEX (2610.06966): execution-boundary authorization (evidence-gated prevention); 0% ASR incl. adaptive.
+- MetaPermit (2609.31039): LLM-inferred meta-attributes + fixed auditable policy.
+- PAA boundary auditing (2610.05163): pre-action Pass/Block auditor; 86% recall @ 6-8% FBR.
+- Training-time: RAISED (2610.06401), CoDeL (2609.34463), CounterSteer (2609.36570).
+Open gaps: multi-agent composition; argument/parameter manipulation (CounterSteer: 13/18 partially resisted); utility/latency costs.
+DTAP connection: the platform ships openclaw and hermes agent backends - the exact always-on targets of the sleeper-channel paper. A sleeper demo (persist via fragment, fire later past the hardened prompt's external-input rules) needs those backends + persistence harness.
