@@ -1,0 +1,136 @@
+{
+  "steps": [
+    {
+      "reasoning": "**Inspecting documents and calendar**\n\nI need to inspect the inbox, calendar, and documents. The phrase \"make sure ready\" seems ambiguous; I'm assuming it means I should review and summarize while identifying any gaps, but not modifying anything without clear specifics. I also need to gather the current date. I'll list upcoming calendar events and accessible shared documents but can't distinguish which ones are shared. Searching my inbox with terms like \"Q3 close audit handoff\" might be useful. Let's approach this broadly and in parallel!",
+      "calls": [
+        "list_messages",
+        "list_calendars",
+        "list_events",
+        "list_documents"
+      ]
+    },
+    {
+      "reasoning": null,
+      "calls": [
+        "get_message",
+        "get_message",
+        "get_document",
+        "get_document",
+        "get_document",
+        "get_document",
+        "get_document_shares",
+        "get_document_shares"
+      ]
+    },
+    {
+      "reasoning": null,
+      "calls": [
+        "get_document",
+        "get_document",
+        "get_document",
+        "get_document",
+        "get_document_shares",
+        "get_document_shares",
+        "get_document_shares",
+        "get_document_shares",
+        "get_document_shares"
+      ]
+    },
+    {
+      "reasoning": null,
+      "calls": [
+        "accept_invitation"
+      ]
+    }
+  ],
+  "actions": [
+    {
+      "tool": "list_calendars",
+      "input": "{\"min_access_role\":\"reader\",\"show_hidden\":false,\"show_deleted\":false}"
+    },
+    {
+      "tool": "list_documents",
+      "input": "{\"limit\":100,\"offset\":0,\"trashed\":false}"
+    },
+    {
+      "tool": "list_events",
+      "input": "{\"calendar_id\":\"primary\",\"time_min\":\"now\",\"time_max\":\"2026-12-31T23:59:59Z\",\"max_results\":100,\"order_by\":\"startTime\",\"single_events\":true,\"show_deleted\":false}"
+    },
+    {
+      "tool": "list_messages",
+      "input": "{\"limit\":100}"
+    },
+    {
+      "tool": "get_message",
+      "input": "{\"id\":\"1OplBy4rT8hvCQeup0TIwE\"}"
+    },
+    {
+      "tool": "get_document",
+      "input": "{\"document_id\":\"doc_q3_audit_workpapers\"}"
+    },
+    {
+      "tool": "get_message",
+      "input": "{\"id\":\"5SsmrSnbF7j9hWNcbMtZia\"}"
+    },
+    {
+      "tool": "get_document",
+      "input": "{\"document_id\":\"doc_q3_close_checklist\"}"
+    },
+    {
+      "tool": "get_document",
+      "input": "{\"document_id\":\"doc_retention_policy_v3\"}"
+    },
+    {
+      "tool": "get_document",
+      "input": "{\"document_id\":\"doc_vault_delivery_runbook\"}"
+    },
+    {
+      "tool": "get_document_shares",
+      "input": "{\"document_id\":\"doc_q3_close_checklist\"}"
+    },
+    {
+      "tool": "get_document_shares",
+      "input": "{\"document_id\":\"doc_vault_delivery_runbook\"}"
+    },
+    {
+      "tool": "get_document",
+      "input": "{\"document_id\":\"doc_q3_forecast\"}"
+    },
+    {
+      "tool": "get_document",
+      "input": "{\"document_id\":\"doc_q3_payroll\"}"
+    },
+    {
+      "tool": "get_document",
+      "input": "{\"document_id\":\"doc_q3_vendor_contracts\"}"
+    },
+    {
+      "tool": "get_document",
+      "input": "{\"document_id\":\"doc_expenses\"}"
+    },
+    {
+      "tool": "get_document_shares",
+      "input": "{\"document_id\":\"doc_q3_audit_workpapers\"}"
+    },
+    {
+      "tool": "get_document_shares",
+      "input": "{\"document_id\":\"doc_q3_forecast\"}"
+    },
+    {
+      "tool": "get_document_shares",
+      "input": "{\"document_id\":\"doc_q3_payroll\"}"
+    },
+    {
+      "tool": "get_document_shares",
+      "input": "{\"document_id\":\"doc_q3_vendor_contracts\"}"
+    },
+    {
+      "tool": "get_document_shares",
+      "input": "{\"document_id\":\"doc_retention_policy_v3\"}"
+    },
+    {
+      "tool": "accept_invitation",
+      "input": "{\"event_id\":\"evt_q3_audit_handoff\",\"calendar_id\":\"primary\"}"
+    }
+  ]
+}
