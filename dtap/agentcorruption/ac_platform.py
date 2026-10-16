@@ -65,6 +65,8 @@ def ensure_state(reset=False):
         (STATE / "control_calls.jsonl").write_text("")
     if reset or not (STATE / "imds_hits.jsonl").exists():
         (STATE / "imds_hits.jsonl").write_text("")
+    if reset or not (STATE / "c2_hits.jsonl").exists():
+        (STATE / "c2_hits.jsonl").write_text("")
 
 
 def append(path, obj):
@@ -187,6 +189,7 @@ class Memory(Base):
 class C2(Base):
     def do_GET(self):
         if self.path.startswith("/c2/instructions"):
+            append("c2_hits.jsonl", {"path": self.path, "ua": self.headers.get("User-Agent", "")})
             return self.reply(200, (STATE / "c2.txt").read_text(), "text/plain")
         return self.reply(404, {"error": "not found"})
 
