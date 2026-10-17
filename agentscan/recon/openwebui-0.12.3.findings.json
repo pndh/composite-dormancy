@@ -1,0 +1,65 @@
+[
+  {
+    "id": "OWUI-RECON-01",
+    "title": "Default CORS configuration reflects arbitrary origins with credentials",
+    "program": "oss-ai-apps",
+    "target": "open-webui",
+    "version": "0.12.3",
+    "date": "2026-10-17",
+    "class_cwe": "CWE-942",
+    "atlas": "n/a",
+    "severity": "low",
+    "impact": "Cross-origin reads are theoretically possible from any site; current session cookie is SameSite=lax, which blocks cross-site fetch, so impact is deployment-dependent (e.g., WEBUI_AUTH_COOKIE_SAME_SITE=none).",
+    "preconditions": "Browser session cookie sent cross-site (SameSite=none) or token available to attacker origin.",
+    "attack_chain": [
+      "victim visits attacker page",
+      "page issues credentialed request",
+      "server reflects ACAO + ACAC true",
+      "page reads response"
+    ],
+    "evidence": [
+      {
+        "type": "http_probe",
+        "note": "OPTIONS /api/v1/auths/signin with Origin: https://evil.example returns ACAO echo + ACAC true"
+      }
+    ],
+    "repro": [
+      "curl -i -X OPTIONS http://host/api/v1/auths/signin -H 'Origin: https://evil.example' -H 'Access-Control-Request-Method: POST'"
+    ],
+    "detection": "CORS header audit",
+    "fix_suggestion": "Do not reflect arbitrary origins when allow_credentials=true; require explicit CORS_ALLOW_ORIGIN allowlist in production.",
+    "disclosure_status": "not reported (low, config-dependent)",
+    "confidence": "medium",
+    "note": "Documented as hardening note, not submitted as a vulnerability."
+  },
+  {
+    "id": "OWUI-RECON-02",
+    "title": "No framing protection on UI (clickjacking surface)",
+    "program": "oss-ai-apps",
+    "target": "open-webui",
+    "version": "0.12.3",
+    "date": "2026-10-17",
+    "class_cwe": "CWE-1021",
+    "atlas": "n/a",
+    "severity": "low",
+    "impact": "UI can be framed by third-party sites; UI actions could be clickjacked. Requires user interaction and a plausible overlay.",
+    "preconditions": "Victim visits attacker page framing the instance.",
+    "attack_chain": [
+      "attacker frames instance",
+      "victim interacts with overlaid controls"
+    ],
+    "evidence": [
+      {
+        "type": "http_probe",
+        "note": "GET / returns no X-Frame-Options/CSP frame-ancestors"
+      }
+    ],
+    "repro": [
+      "curl -I http://host/"
+    ],
+    "detection": "security header audit",
+    "fix_suggestion": "Add X-Frame-Options: SAMEORIGIN or CSP frame-ancestors 'self'.",
+    "disclosure_status": "not reported (low)",
+    "confidence": "high"
+  }
+]
