@@ -1,0 +1,66 @@
+{
+  "microsoft-copilot": {
+    "name": "Microsoft Copilot Bounty Program",
+    "vendor": "Microsoft (MSRC)",
+    "type": "bounty",
+    "mode": "assisted",
+    "submission": "MSRC Researcher Portal (product: Copilot, AI+ML, and LLMs)",
+    "awards": "250-30000 USD",
+    "severity_bar": "MSRC AI severity classification + online services bug bar",
+    "scope": [
+      "copilot.microsoft.com (browser)",
+      "copilot.ai (browser)",
+      "Copilot in Microsoft Edge (Windows), incl. Copilot Mode",
+      "Microsoft Copilot app (iOS, Android)",
+      "Copilot in Windows OS via the Copilot app",
+      "Copilot on WhatsApp and Telegram"
+    ],
+    "accounts": "personal research account; add MSOBB marker",
+    "evidence_requirements": [
+      "conversation id (chat command /id)",
+      "latest fully patched version",
+      "attack vector description",
+      "minimal repro steps",
+      "effect artifact (screenshot/log/canary receipt)"
+    ],
+    "out_of_scope": [
+      "prompt injection without security impact on users other than the attacker",
+      "model hallucination pretending to run code",
+      "system/meta prompt leakage",
+      "content-related issues (AI derived harm path)",
+      "DoS",
+      "URL redirects alone",
+      "cookie replay",
+      "subdomain takeover",
+      "low-impact CSRF",
+      "server-side info disclosure (IPs, server names, most stack traces)",
+      "debug pages / de-minified JS",
+      "extensive or unlikely user actions",
+      "bugs in user-created content/apps",
+      "third-party software without impact on the service",
+      "training/docs/samples/community forums"
+    ]
+  },
+  "oss-mcp": {
+    "name": "OSS MCP server / agent framework hunting",
+    "vendor": "various",
+    "type": "oss",
+    "mode": "automated",
+    "submission": "GitHub Security Advisory (repo security policy) / huntr",
+    "awards": "recognition + CVE via GitHub CNA (case-by-case)",
+    "severity_bar": "CVSS 3.1/4.0 + CWE; impact narrative",
+    "scope": ["target repo clone; local sandbox execution of the released version"],
+    "accounts": "local only; synthetic data",
+    "evidence_requirements": [
+      "affected version/commit",
+      "minimal PoC against released version",
+      "effect artifact (file read outside root / canary request / command output)",
+      "fix suggestion"
+    ],
+    "out_of_scope": [
+      "upstream dependencies unless the bug is reachable through this project",
+      "behavior-only observations",
+      "issues already fixed on main"
+    ]
+  }
+}
