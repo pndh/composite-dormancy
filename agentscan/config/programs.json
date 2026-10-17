@@ -49,7 +49,9 @@
     "submission": "GitHub Security Advisory (repo security policy) / huntr",
     "awards": "recognition + CVE via GitHub CNA (case-by-case)",
     "severity_bar": "CVSS 3.1/4.0 + CWE; impact narrative",
-    "scope": ["target repo clone; local sandbox execution of the released version"],
+    "scope": [
+      "target repo clone; local sandbox execution of the released version"
+    ],
     "accounts": "local only; synthetic data",
     "evidence_requirements": [
       "affected version/commit",
@@ -61,6 +63,60 @@
       "upstream dependencies unless the bug is reachable through this project",
       "behavior-only observations",
       "issues already fixed on main"
+    ]
+  },
+  "0din": {
+    "name": "0din (Mozilla 0Day Investigative Network)",
+    "vendor": "Mozilla",
+    "type": "bounty",
+    "mode": "automated",
+    "submission": "0din.ai portal \u2014 abstract first (3 business day scope/payout decision)",
+    "awards": "500-15000 USD (Low<=500, Medium<=2500, High<=5000, Severe<=15000)",
+    "severity_bar": "0din bands: model bugs (prompt extraction, guardrail, interpreter, content manipulation, weights) + app bugs (read/write/execute violations)",
+    "scope": [
+      "commonly adopted GenAI models and applications (commercial or open source)",
+      "model bugs inside the model itself",
+      "application bugs that start with prompt injection and end in unauthorized action"
+    ],
+    "accounts": "test accounts; no service disruption",
+    "evidence_requirements": [
+      "affected model/app + latest generation",
+      "boundary violation class (read/write/execute)",
+      "PoC + effect artifact",
+      "original/unreported finding",
+      "abstract first, full details after sign-off"
+    ],
+    "out_of_scope": [
+      "ecosystem software around the model (for model bugs)",
+      "content-only issues without boundary violation",
+      "duplicates of public/known reports"
+    ]
+  },
+  "oss-ai-apps": {
+    "name": "Self-hosted AI/agent applications (OSS CVE track)",
+    "vendor": "various",
+    "type": "oss",
+    "mode": "automated",
+    "submission": "repo SECURITY.md / GitHub Security Advisory; CVE via maintainer or GitHub CNA",
+    "awards": "0 (recognition + CVE) or maintainer bounty",
+    "severity_bar": "CVSS 3.1/4.0 + CWE; effect-proven impact",
+    "scope": [
+      "Open WebUI, n8n, Flowise, Langflow, Dify, LibreChat, AnythingLLM",
+      "Ollama, vLLM, LiteLLM",
+      "MCP servers (filesystem, git, fetch/browser, db)"
+    ],
+    "accounts": "local only; synthetic data",
+    "evidence_requirements": [
+      "affected version/commit",
+      "minimal PoC against released version",
+      "effect artifact (file read outside root / canary callback / command output)",
+      "fix suggestion",
+      "duplicate check against advisories"
+    ],
+    "out_of_scope": [
+      "upstream dependencies unless reachable through this project",
+      "behavior-only observations",
+      "already-fixed-on-main issues"
     ]
   }
 }
